@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import models.Etudiant;
 import models.Filiere;
+import models.Matiere;
 //CTRL + SHIFT + O pour générer les imports
 public class EtudiantDAO implements DAO<Etudiant> {
   private final DaoFactory daoFactory;
@@ -29,7 +30,7 @@ public class EtudiantDAO implements DAO<Etudiant> {
       { 
           Connection connexion=daoFactory.getConnection();
           Statement stmt=connexion.createStatement();
-          String sql="insert into etudiants(ID_FIL,NOM,PRENOM,DATE,LIEU,SEXE,MATRICLUE) values("+
+          String sql="insert into etudiants(ID_FIL,NOM,PRENOM,DATE,LIEU,SEXE,MATRICULE,NIVEAU) values("+
            etd.getFiliere().getId()+",'"+
            etd.getNom()+"','"+
            etd.getPrenom()+"','"+
@@ -70,8 +71,9 @@ public class EtudiantDAO implements DAO<Etudiant> {
         }
        catch(SQLException e)
        {
-           e.printStackTrace();
+          System.out.println("oops un probleme est survenu. Veillez reessayer");
        }
+       
        return false;
   }
    
@@ -136,13 +138,18 @@ public class EtudiantDAO implements DAO<Etudiant> {
                 fil,
                 rs.getString("niveau")); 
                 // recuperation de la note
-                sql = "select NOTE, ID_MAT from notes where ID_ETD = " + rs.getInt("ID_ETD") + ""; 
-                rs = stmt.executeQuery(sql);
-                sql = "select INTITULE form matieres where ID_MAT = " + rs.getInt("ID_MAT") + "";
-                r = stmt.executeQuery(sql);
+                ResultSet rsMat = null, rsNote = null;
+                Statement stmt2 = null, stmt3 = null;
                 HashMap list = new HashMap();
-                if(rs.first() && r.first())
-                    list.put(r.getString("INTITULE"), rs.getFloat("NOTE"));
+                sql = "select NOTE, ID_MAT from notes where ID_ETD = " + rs.getInt("ID_ETD") + "";
+                rsNote = stmt2.executeQuery(sql);
+                while(rsNote.next())
+                {
+                    sql= "select INTITULE from matieres where ID_MAT = " + rsNote.getInt("ID_MAT") + "";
+                    rsMat = stmt3.executeQuery(sql);
+                     if(rsMat.first())
+                         list.put(rsMat.getString("INTITULE"), rs.getFloat("NOTE")); 
+                }  
                 etudiant.setListNote(list);
             }
         }
@@ -168,9 +175,9 @@ public class EtudiantDAO implements DAO<Etudiant> {
         sql = "Select * from etudiants";
         rs = stmt.executeQuery(sql);
         listEtudiant = new ArrayList<Etudiant>();
-        HashMap list = new HashMap();
         while(rs.next())
         {
+             HashMap list = new HashMap();
 //            String getN="select NIVEAU from niveaux where ID_NV = "+ rs.getInt("ID_ETD") +"";
 //            String getFil = "select filiere from filieres where ID_FIL = " + rs.getInt("ID_FIL") +"";
 //            String getDep = "select DEP from niveaux where ID_DEP = " + rs.getInt("ID_DEP") +"";
@@ -179,12 +186,12 @@ public class EtudiantDAO implements DAO<Etudiant> {
 //            ResultSet rsgetFil = stmt.executeQuery();
 //            ResultSet rsgetDep = stmt.executeQuery();
             
-            sql2 = "select * from filieres where ID_FIL = " + rs.getInt("ID_FIL") + "";
+            sql = "select * from filieres where ID_FIL = " + rs.getInt("ID_FIL") + "";
             Filiere fil = null;
             stmt2 = connexion.createStatement();
             stmt3 = connexion.createStatement();
             stmt4 = connexion.createStatement();
-            r = stmt2.executeQuery(sql2);
+            r = stmt2.executeQuery(sql);
             if(r.first())
             fil = new Filiere(r.getString("FILIERE"));
             etudiant = new Etudiant(
@@ -197,12 +204,12 @@ public class EtudiantDAO implements DAO<Etudiant> {
             rs.getString("MATRICULE"),
             fil,
             rs.getString("NIVEAU"));
-            String sql3 = "select NOTE, ID_MAT from notes where ID_ETD = " + rs.getInt("ID_ETD") + "";
-            rsNote = stmt3.executeQuery(sql3);
+            sql = "select NOTE, ID_MAT from notes where ID_ETD = " + rs.getInt("ID_ETD") + "";
+            rsNote = stmt3.executeQuery(sql);
             while(rsNote.next())
             {
-               String sql4 = "select INTITULE from matieres where ID_MAT = " + rsNote.getInt("ID_MAT") + "";
-               rsMat = stmt4.executeQuery(sql4);
+               sql= "select INTITULE from matieres where ID_MAT = " + rsNote.getInt("ID_MAT") + "";
+               rsMat = stmt4.executeQuery(sql);
                 if(rsMat.first())
                     list.put(rsMat.getString("INTITULE"), rsNote.getFloat("NOTE")); 
             }
@@ -215,5 +222,25 @@ public class EtudiantDAO implements DAO<Etudiant> {
             e.printStackTrace();
         }
     return listEtudiant;
+  }
+  public static void main(String[] args)
+  {
+    DaoFactory daoFactory = null;
+    String dbname = "seainfo20162017l3s6";
+    String username = "idopaul";
+    String password = "12231381";
+    daoFactory = new DaoFactory(dbname, username, password);
+    ArrayList<Etudiant> listEtudiant = daoFactory.getEtudiantDAO().getAll(); ;
+    ArrayList<Matiere> listMatiere = null;
+    listMatiere = daoFactory.getMatiereDAO().getAll();
+    for(Etudiant e : listEtudiant)
+    {
+        System.out.println(e.getNom());
+        for(Matiere m : listMatiere)
+    {   System.out.println(m.getIntitule());
+        System.out.println(e.getListNote().get(m.getIntitule()));
+    }
+    }
+    
   }
 }
