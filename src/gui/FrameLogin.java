@@ -20,9 +20,6 @@ import models.Matiere;
  */
 public class FrameLogin extends javax.swing.JFrame {
 private DaoFactory daoFactory;
-//private static String dbname = "seainfo20162017l3s6";
-//private static String username = "idopaul";
-//private static String password = "12231381";
     /**
      * Creates new form FrameLogin
      */
@@ -107,21 +104,27 @@ private DaoFactory daoFactory;
 
     private void btConnecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConnecterActionPerformed
         // TODO add your handling code here:
+        //connexion d'un enseignant
         if(!txtPwd.getText().equals(""))
         {
             UserChecker user = new UserChecker(this.daoFactory,"enseignants", txtPwd.getText());
             if(user.Check())
             {
                 EnseignantDAO enseignantDao = new EnseignantDAO(this.daoFactory);
-                Enseignant enseignant = enseignantDao.find("password", txtPwd.getText());
-                ArrayList<Matiere> mat = enseignant.getListMatiere();
-//                for(Matiere m : mat)
-//                {
-//                    System.out.println(mat.toString());
-//                }
-                FrameSaisieNote fsn = new FrameSaisieNote(daoFactory, enseignant);
-                fsn.setVisible(true);
-                this.dispose();
+                Enseignant enseignant = null;
+                enseignant = enseignantDao.find("password", txtPwd.getText());
+                if(enseignant == null)
+                {
+                    (new Message("mot de passe incorrecte !")).setVisible(true);
+                }
+                else
+                {
+                    ArrayList<Matiere> mat = enseignant.getListMatiere();
+                    FrameSaisieNote fsn = new FrameSaisieNote(daoFactory, enseignant);
+                    fsn.setVisible(true);
+                    this.dispose(); 
+                }
+                
             }
         }
         
@@ -132,41 +135,7 @@ private DaoFactory daoFactory;
         this.dispose();
     }//GEN-LAST:event_btCancelActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(FrameLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(FrameLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(FrameLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(FrameLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new FrameLogin().setVisible(true);
-//            }
-//        });
-//    }
-
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btCancel;
     private javax.swing.JButton btConnecter;

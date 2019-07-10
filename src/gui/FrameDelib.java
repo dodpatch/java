@@ -4,13 +4,9 @@
  * and open the template in the editor.
  */
 package gui;
-import DAO.EtudiantExcelDAO;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -22,12 +18,13 @@ import org.apache.poi.ss.usermodel.Row;
 import DAO.DaoFactory;
 import DAO.EtudiantDAO;
 import DAO.MatiereDAO;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
 import models.Etudiant;
 import models.Matiere;
-import models.CreatExcelEtudiant;
 
 /**
  *
@@ -53,6 +50,11 @@ public class FrameDelib extends javax.swing.JFrame {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.daoFactory = dao;
         addRowToJtableDelib();
+        Toolkit toolkit = getToolkit();
+        Dimension size = toolkit.getScreenSize();
+        setLocation(size.width/2 - getWidth()/2,size.height/2 - getHeight()/2);
+        this.setTitle("Déliberation");
+   
     }
     
     //generation de pv
@@ -182,7 +184,7 @@ public class FrameDelib extends javax.swing.JFrame {
             // Bonus (E)
         j++;
         }
-        File file = new File("C:/demo/etudiant44.xls");
+        File file = new File("C:/Deliberation/PV.xls");
         file.getParentFile().mkdirs();
         FileOutputStream outFile = new FileOutputStream(file);
         this.workbook.write(outFile);
@@ -300,48 +302,15 @@ public class FrameDelib extends javax.swing.JFrame {
         try
         {
             generatePV();
+            (new Message("pv generé dans C:/Deliberation/")).setVisible(true);
         }
         catch(IOException e)
         {
             e.printStackTrace();
         }
-       //CreatExcelEtudiant Pv = new CreatExcelEtudiant(listEtudiant, listMatiere);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(FrameDelib.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(FrameDelib.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(FrameDelib.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(FrameDelib.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new FrameDelib().setVisible(true);
-//            }
-//        });
-//    }
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -7,16 +7,13 @@ package gui;
 import DAO.DaoFactory;
 import DAO.DAO;
 import DAO.FiliereDAO;
-import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 //import models.Etudiant;
 //import models.EtudiantDAO;
 import models.*;
-import java.util.regex.Pattern;
 /**
  *
  * @author DIGITAL
@@ -33,7 +30,11 @@ public class FrameEtudiant extends javax.swing.JFrame {
         this.daoFactory = daoFactory;
         initComponents();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        //this.setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);
+        this.setTitle("Enregistrer un Etudiant");
+        Toolkit toolkit = getToolkit();
+        Dimension size = toolkit.getScreenSize();
+        setLocation(size.width/2 - getWidth()/2,size.height/2 - getHeight()/2);
+   
         comboUfr.addItem("UFR");
     }
 
@@ -153,11 +154,6 @@ public class FrameEtudiant extends javax.swing.JFrame {
 
         jLabel1.setText("Nom");
 
-        txtNom.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtNomFocusLost(evt);
-            }
-        });
         txtNom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNomActionPerformed(evt);
@@ -468,14 +464,6 @@ public class FrameEtudiant extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_comboSexeActionPerformed
 
-    private void txtNomFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNomFocusLost
-          // TODO add your handling code here:
-       if(Pattern.matches("[aA-zZ]{2}",txtNom.getText()))
-       {
-           System.out.println("Ok");
-       }
-    }//GEN-LAST:event_txtNomFocusLost
-
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
           // TODO notifications:
           if(!labelEmpty.getText().equals(""))
@@ -508,41 +496,6 @@ public class FrameEtudiant extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowActivated
 
-//    /**
-//     * @param args the command line arguments
-//     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(FrameEtudiant.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(FrameEtudiant.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(FrameEtudiant.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(FrameEtudiant.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new FrameEtudiant().setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btCancel;

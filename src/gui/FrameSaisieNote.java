@@ -8,6 +8,8 @@ package gui;
 import DAO.DaoFactory;
 import DAO.EtudiantDAO;
 import DAO.NoteDAO;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -26,8 +28,11 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
     public ArrayList<Etudiant> listEtudiant;
     ArrayList<Matiere> listMatiere;
     Etudiant etudiant;
+    Matiere matiere;
     float note;
+    String strNote;
     String matricule;
+    int row = -1;
     /**
      * Creates new form SaisieNote
      * @param enseignant
@@ -37,7 +42,9 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
         this.daoFactory = dao;
         this.enseignant = enseignant;
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        //ArrayList<Matiere> listMatiere = new ArrayList<Matiere>();
+        Toolkit toolkit = getToolkit();
+        Dimension size = toolkit.getScreenSize();
+        setLocation(size.width/2 - getWidth()/2,size.height/2 - getHeight()/2);
         listMatiere = enseignant.getListMatiere();
         for(Matiere mat: listMatiere)
         {
@@ -68,27 +75,14 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
             rowData[2] = listEtudiant.get(i).getDate();
             rowData[3] = listEtudiant.get(i).getLieu();
             rowData[4] = listEtudiant.get(i).getMatricule();
+            
             //afficher la note correspondante à la matiere dans la combo
-            //comboMatiere.getSelectedItem().toString()
             rowData[5] = listEtudiant.get(i).getListNote().get(comboMatiere.getSelectedItem().toString());
             model.addRow(rowData);
         }
         
         
     } 
-//    public void mouseClicked(MouseEvent evt)
-//    {
-////       tblNote.addMouseListener(new MouseAdpater(){
-////       System.out.println("");
-////       });
-//        int row = tblNote.getSelectedRow();
-//        int col = tblNote.getSelectedColumn();
-//        float note = (float) model.getValueAt(row, col);
-//        
-//        
-//        
-//    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,7 +104,8 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtNote = new javax.swing.JTextField();
-        btAdd = new javax.swing.JButton();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -135,7 +130,6 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tblNote.setColumnSelectionAllowed(false);
         tblNote.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblNoteMouseClicked(evt);
@@ -147,6 +141,11 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblNote);
 
         txtSearch.setText("Rechercher ici");
+        txtSearch.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtSearchMouseClicked(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "L3S6" }));
 
@@ -162,10 +161,21 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
             }
         });
 
-        btAdd.setText("Ajouter");
-        btAdd.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jButton1.setText("Ajouter");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btAddActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -193,9 +203,13 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
                 .addComponent(txtNote, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addComponent(btAdd)
+                .addGap(80, 80, 80)
+                .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(228, 228, 228))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,8 +228,10 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtNote, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btAdd))
-                .addGap(28, 28, 28)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -234,16 +250,57 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNoteActionPerformed
 
-    private void btAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddActionPerformed
+    private void tblNoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNoteMousePressed
         // TODO add your handling code here:
-        int note = Integer.parseInt(txtNote.getText());
-        if(txtNote.getText().equals("") || txtNote.getText().equals(null) || note<0)
+        System.out.println("mouse pressed");
+    }//GEN-LAST:event_tblNoteMousePressed
+
+    private void tblNoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNoteMouseClicked
+        // TODO add your handling code here:
+        int var = 2;
+        TableModel mod = tblNote.getModel();
+        int row = tblNote.getSelectedRow();
+        if(row>=0)
         {
-            Message m = new Message("valeur incorrecte !");
+            txtNote.setText(model.getValueAt(row, 5).toString());
+            strNote = model.getValueAt(row, 5).toString();
+            matricule = model.getValueAt(row, 4).toString();
+            if(txtNote.getText()==null || txtNote.getText().equals("") )
+            {
+                note = -1; // l etudiant n a pas de note
+            }
+            else
+            {
+                note = Float.valueOf(txtNote.getText()); 
+            }
+        
+        }
+        
+
+    }//GEN-LAST:event_tblNoteMouseClicked
+
+    private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
+        // TODO add your handling code here:
+        (new Message("Note implemented yet")).setVisible(true);
+    }//GEN-LAST:event_txtSearchMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if(txtNote.getText().equals("") ||txtNote.getText()==null)
+        {
+             Message m = new Message("Entrez une note !");
+             m.setVisible(true);
         }
         else
         {
-            
+            String mat = comboMatiere.getSelectedItem().toString();
+            for(Matiere m : listMatiere)
+            {
+                if(m.equals(mat))
+                {
+                    matiere = m;
+                }
+            }
             NoteDAO noteDao = daoFactory.getNoteDAO();
             for(Etudiant e : listEtudiant)
             {
@@ -256,97 +313,56 @@ public final class FrameSaisieNote extends javax.swing.JFrame {
                 
                 
             }
-            if(note>=0)
+            try
             {
-                //mise à jour de la note
-                noteDao.create(note,etudiant.getId());
-                Message m = new Message("Enregistré !");
+                float note2 = Float.valueOf(txtNote.getText());
+                if(row>=0)
+                 model.setValueAt(note2, row, 5);
+                if(note < 0)
+                {
+                    // l etudiant n a pas encore de note
+                    noteDao.create(note, etudiant.getId(),matiere.getId());
+                }
+                else
+                    if(note != note2)
+                    { 
+                        // la note est modifier
+                       noteDao.update(note, etudiant.getId(),matiere.getId()); 
+                        
+                    }
+                
             }
-            else
+            catch(Exception e)
             {
-                //creation d'une note
-                noteDao.update(note,etudiant.getId());
-                Message m = new Message("Enregistré !");
                 
             }
             
+            
         }
-   
-    }//GEN-LAST:event_btAddActionPerformed
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void tblNoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNoteMousePressed
-        // TODO add your handling code here:
-        System.out.println("mouse pressed");
-    }//GEN-LAST:event_tblNoteMousePressed
-
-    private void tblNoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNoteMouseClicked
-        // TODO add your handling code here:
-        int var = 2;
-        TableModel mod = tblNote.getModel();
-        System.out.println("row count: "+ var);
-        System.out.println("mouse click");
-        int row = tblNote.getSelectedRow();
-        System.out.println("row count: "+row);
-        txtNote.setText(model.getValueAt(row, 5).toString());
-        matricule = model.getValueAt(row, 4).toString();
-        note = Float.valueOf(txtNote.getText());
-        System.out.println("Ok");
-    }//GEN-LAST:event_tblNoteMouseClicked
-
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(FrameSaisieNote.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(FrameSaisieNote.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(FrameSaisieNote.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(FrameSaisieNote.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new FrameSaisieNote().setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btAdd;
     private javax.swing.JComboBox<String> comboMatiere;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblNote;
     private javax.swing.JTextField txtNote;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
-public static void main(String[] arg)
-{
-    System.out.println("coolest");
-}
+//public static void main(String[] arg)
+//{
+//    FrameSaisieNote f = new FrameSaisieNote (null, null);
+//    f.setVisible(true);
+//}
 
 }

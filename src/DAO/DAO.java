@@ -13,10 +13,9 @@ package DAO;
 import java.util.ArrayList;
   public interface  DAO<T> 
   {
- 
   public boolean create(T obj);
-  public boolean delete(String field,String value);
-  public  boolean update(T obj,String field,String value);
+  public boolean delete(int id);
+  public  boolean update(T obj,int id);
   public  T find(String field,String value);
   public ArrayList<T> getAll();
   

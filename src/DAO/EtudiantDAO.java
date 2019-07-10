@@ -9,14 +9,11 @@ package DAO;
  *
  * @author DIGITAL
  */
-import DAO.DAO;
 import java.util.ArrayList;
 import java.sql.*;
 import java.util.HashMap;
-import java.util.Map;
 import models.Etudiant;
 import models.Filiere;
-import models.Matiere;
 //CTRL + SHIFT + O pour générer les imports
 public class EtudiantDAO implements DAO<Etudiant> {
   private final DaoFactory daoFactory;
@@ -109,8 +106,6 @@ public class EtudiantDAO implements DAO<Etudiant> {
   {
         Etudiant etudiant=null;  
         String sql=null;
-        //Connection connexion=null;
-       // PreparedStatement stmt=null;
         ResultSet rs=null;
 
         try 
@@ -118,7 +113,6 @@ public class EtudiantDAO implements DAO<Etudiant> {
             
             Connection connexion=daoFactory.getConnection();
             Statement stmt=connexion.createStatement();
-//            "+var+"="+value;
             sql="select * from etudiants where "+field+"='"+value+"'"; 
             
             rs=stmt.executeQuery(sql);
@@ -223,24 +217,5 @@ public class EtudiantDAO implements DAO<Etudiant> {
         }
     return listEtudiant;
   }
-  public static void main(String[] args)
-  {
-    DaoFactory daoFactory = null;
-    String dbname = "seainfo20162017l3s6";
-    String username = "idopaul";
-    String password = "12231381";
-    daoFactory = new DaoFactory(dbname, username, password);
-    ArrayList<Etudiant> listEtudiant = daoFactory.getEtudiantDAO().getAll(); ;
-    ArrayList<Matiere> listMatiere = null;
-    listMatiere = daoFactory.getMatiereDAO().getAll();
-    for(Etudiant e : listEtudiant)
-    {
-        System.out.println(e.getNom());
-        for(Matiere m : listMatiere)
-    {   System.out.println(m.getIntitule());
-        System.out.println(e.getListNote().get(m.getIntitule()));
-    }
-    }
-    
-  }
+ 
 }
