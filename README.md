@@ -1,7 +1,7 @@
 
    
    # Gestion-notes
-   Gestion note est projet java.
+   Gestion note estun projet java.
    ce projet était un projet de classe que nous donné notre projet dans le cadre du cours Programmation Orienté Objet (POO).
    ## Dependences
    1. jcalendar-1.4.jar
